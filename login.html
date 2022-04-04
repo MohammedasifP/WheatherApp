@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wheather</title>
+    <style>
+          body{
+            background-color: whitesmoke;
+        }
+        .container{
+            background-color: turquoise;
+            height: 400px;
+            width: 500px;
+            margin: auto;
+            border-radius: 10px;
+           
+        }
+        .container>form{
+            text-align: center;
+             
+             
+        }
+        input{
+            border: 1px solid red;
+            height: 20px;
+            width: 300px;
+            border-radius: 5px;
+
+        }
+        .header{
+            height: 40px;
+            background-color: rgb(28, 131, 175);
+            color: white;
+           font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: auto;
+        }
+        @media only screen and (min-width:0px) and (max-width:400px){
+            .header{
+                width: 100%;
+            }
+            .container{
+                width: 100%;
+            }
+            input{
+                width: 90%;
+            }
+        }
+      
+    </style>
+</head>
+<body>
+    <div class="header">Please Login To Your Account Here</div>
+    <div style="background-image: url(https://images.pexels.com/photos/346529/pexels-photo-346529.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2); background-repeat: no-repeat;background-size: cover;" class="container">
+        <form onsubmit="login(event)">
+            <h2 style="color: white;">Login</h2>
+         <input type="text" id="username_login" placeholder="username"required><br><br>
+         <input type="password" id="password_login" placeholder="password" required><br><br>
+         <input type="submit">
+        </form>
+    </div>
+    </div>
+</body>
+</html>
+<script>
+    var data1;
+     async function login(e){
+        e.preventDefault();
+        login_data={
+            username:document.getElementById('username_login').value,
+            password:document.getElementById('password_login').value,
+        }
+        login_data=JSON.stringify(login_data)
+        let login_url='https://masai-api-mocker.herokuapp.com/auth/login'
+        let response=await fetch(login_url,{
+            method:"POST",
+            body:login_data,
+            headers:{
+                "Content-Type":"application/json"
+            },
+        })
+         data1=await response.json();
+         console.log(data1)
+        let username=document.getElementById('username_login').value;
+        getuser(username,data1.token)
+    }
+    async function getuser(username,token){
+        let getuser_url=`https://masai-api-mocker.herokuapp.com/user/${username}`
+        let response=await fetch(getuser_url,{
+            headers:{
+           "Content-Type":"application/json",
+           Authorization:`Bearer ${token}`
+            },
+
+        })
+        let data2=await response.json();
+        localStorage.setItem("ueserdata",JSON.stringify(data2))
+        if(data1.error==false) {
+              window.location.href='wheather.html'
+          }
+          else{
+              alert("Enter correct details")
+          }
+    }
+</script>
